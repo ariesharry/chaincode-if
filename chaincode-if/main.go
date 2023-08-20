@@ -1,8 +1,8 @@
-package palmoil
+package main
 
 import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
-	palmoil "github.com/ariesharry/chaincode-if/tree/main/chaincode-if/palmoil"
+	palmoil "github.com/ariesharry/chaincode-if/palmoil"
 )
 
 func main() {
