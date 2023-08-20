@@ -18,11 +18,6 @@ type Farmer struct {
 	Farm    []string `json:"farm"`
 }
 
-// PalmOilContract represents the contract for managing farmers
-type PalmOilContract struct {
-	contractapi.Contract
-}
-
 // AddFarmer adds a new farmer to the ledger
 func (pc *PalmOilContract) AddFarmer(ctx contractapi.TransactionContextInterface, id string, name string, nik string, address string, email string, noHP string, farmsInput string) error {
 	// Check if a farmer with the given ID already exists
