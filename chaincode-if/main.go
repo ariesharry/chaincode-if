@@ -1,4 +1,4 @@
-package main
+package palmoil
 
 import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
