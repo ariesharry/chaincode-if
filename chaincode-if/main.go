@@ -1,7 +1,12 @@
 package main
 
+import (
+	"github.com/hyperledger/fabric-contract-api-go/contractapi"
+	palmoil "github.com/ariesharry/chaincode-if/tree/main/chaincode-if/palmoil"
+)
+
 func main() {
-	chaincode, err := contractapi.NewChaincode(new(PalmOilContract))
+	chaincode, err := contractapi.NewChaincode(&palmoil.PalmOilContract{})
 	if err != nil {
 		fmt.Printf("Error create palm oil chaincode: %s", err.Error())
 		return
