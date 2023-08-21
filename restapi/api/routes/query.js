@@ -40,7 +40,7 @@ async function invokeChaincode(org, user, func, args = []) {
 }
 
 
-router.post('/', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     const { org, user, func, args } = req.body;
 
     // Check if the function being called is 'AddFarmer' and handle the farms attribute
