@@ -52,7 +52,7 @@ Run the following command to deploy the dutch auction smart contract.
 ```
 
 Update
-./network.sh deployCC -ccn palmoil -ccv 3.0 -ccp ../if/chaincode-if/ -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccs 2
+./network.sh deployCC -ccn palmoil -ccv 2.0 -ccp ../if/chaincode-if/ -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccs 2
 
 Note that we deploy the smart contract with an endorsement policy of `"OR('Org1MSP.peer','Org2MSP.peer')" ` instead of using the default endorsement policy of the majority of orgs on the channel. Either Org1 or Org2 can create an auction without the endorsement of the other organization.
 

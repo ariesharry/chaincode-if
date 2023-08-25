@@ -1,4 +1,4 @@
-module palmoil.go
+module chaincode-if
 
 go 1.20
 

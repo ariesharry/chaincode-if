@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const invoke = require('./api/routes/invoke');
 const query = require('./api/routes/query');
+const queryAll = require('./api/routes/queryAll');
 const { application } = require('express');
 
 app.use(morgan('dev'));
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 
 app.use('/invoke', invoke);
 app.use('/query', query);
+app.use('/queryAll', queryAll);
 
 
 app.use((req, res, next) => {

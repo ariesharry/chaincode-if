@@ -51,6 +51,15 @@ router.post('/', async (req, res, next) => {
         }
     }
 
+    // Check if the function being called is 'AddCollector' or 'UpdateCollector' and handle the farms attribute
+    if ((func === 'AddCollector' || func === 'UpdateCollector') && args && args.length > 8) {
+        try {
+            args[8] = JSON.stringify(args[8]);
+        } catch (e) {
+            return res.status(400).json({ error: "Failed to stringify farms attribute." });
+        }
+    }
+
     try {
         const result = await invokeChaincode(org, user, func, args);
         res.json({ result });

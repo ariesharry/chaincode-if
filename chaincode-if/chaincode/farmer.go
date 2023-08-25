@@ -1,4 +1,4 @@
-package main
+package chaincode
 
 import (
 	"encoding/json"
@@ -32,10 +32,16 @@ type Farm struct {
 	Certificate   string  `json:"certificate"`
 }
 
-// PalmOilContract represents the contract for managing farmers
-type PalmOilContract struct {
-	contractapi.Contract
-}
+// // PalmOilContract represents the contract for managing farmers
+// type PalmOilContract struct {
+// 	contractapi.Contract
+// }
+
+// func NewPalmOilContract() contractapi.ContractInterface {
+// 	return &PalmOilContract{
+// 		Contract: contractapi.Contract{},
+// 	}
+// }
 
 // AddFarmer adds a new farmer to the ledger
 func (pc *PalmOilContract) AddFarmer(ctx contractapi.TransactionContextInterface, id string, name string, nik string, address string, email string, noHP string, farmsInput string) error {
@@ -127,7 +133,7 @@ func (pc *PalmOilContract) QueryFarmerByID(ctx contractapi.TransactionContextInt
 
 // QueryAllFarmers retrieves all farmers from the ledger
 func (pc *PalmOilContract) QueryAllFarmers(ctx contractapi.TransactionContextInterface) ([]*Farmer, error) {
-	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	resultsIterator, err := ctx.GetStub().GetStateByRange("FRR_", "FRR_zzzzzzzzzz")
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +235,7 @@ func (pc *PalmOilContract) QueryFarmByID(ctx contractapi.TransactionContextInter
 
 // QueryAllFarms retrieves all farms from the ledger
 func (pc *PalmOilContract) QueryAllFarms(ctx contractapi.TransactionContextInterface) ([]*Farm, error) {
-	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	resultsIterator, err := ctx.GetStub().GetStateByRange("FRM_", "FRM_zzzzzzzzzz")
 	if err != nil {
 		return nil, err
 	}
@@ -251,14 +257,14 @@ func (pc *PalmOilContract) QueryAllFarms(ctx contractapi.TransactionContextInter
 }
 
 
-func main() {
-	chaincode, err := contractapi.NewChaincode(new(PalmOilContract))
-	if err != nil {
-		fmt.Printf("Error create palm oil chaincode: %s", err.Error())
-		return
-	}
+// func main() {
+// 	chaincode, err := contractapi.NewChaincode(new(PalmOilContract))
+// 	if err != nil {
+// 		fmt.Printf("Error create palm oil chaincode: %s", err.Error())
+// 		return
+// 	}
 
-	if err := chaincode.Start(); err != nil {
-		fmt.Printf("Error starting palm oil chaincode: %s", err.Error())
-	}
-}
+// 	if err := chaincode.Start(); err != nil {
+// 		fmt.Printf("Error starting palm oil chaincode: %s", err.Error())
+// 	}
+// }
