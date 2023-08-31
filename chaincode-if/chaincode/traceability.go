@@ -25,6 +25,7 @@ type Commodity struct {
 
 type ProcessedCommodity struct {
 	ID         string   `json:"id"`
+	Processor  string	`json:"processor"`
 	Quantity   float64  `json:"quantity"`
 	Material   []string `json:"material"`
 	BatchNumber string  `json:"batchNumber"`
@@ -152,43 +153,27 @@ func (pc *PalmOilContract) Transported(ctx contractapi.TransactionContextInterfa
 }
 
 
-func (pc *PalmOilContract) Process(ctx contractapi.TransactionContextInterface, commodityID string, processedID string, quantity float64, material []string, batchNumber string, quality string, pic string, location string) error {
-	// Fetch the commodity data from the ledger
-	commodityJSON, err := ctx.GetStub().GetState(commodityID)
+func (pc *PalmOilContract) Process(ctx contractapi.TransactionContextInterface, processedID string, processor string, quantity float64, materialInput string, batchNumber string, quality string, pic string, location string) error {
+	processorJSON, err := ctx.GetStub().GetState(processor)
 	if err != nil {
 		return fmt.Errorf("failed to read from world state: %v", err)
 	}
-	if commodityJSON == nil {
-		return fmt.Errorf("the commodity with ID %s does not exist", commodityID)
+	if processorJSON == nil {
+		return fmt.Errorf("the processir with ID %s does not exist", processor)
 	}
-
-	var commodity Commodity
-	err = json.Unmarshal(commodityJSON, &commodity)
+	
+	var materials []string
+	err = json.Unmarshal([]byte(materialInput), &materials)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal commodity JSON: %v", err)
-	}
-
-	// Update the traceability's status, location, and PIC for the commodity
-	commodity.Traceability.Status = append(commodity.Traceability.Status, "processed")
-	commodity.Traceability.PIC = append(commodity.Traceability.PIC, pic)
-	commodity.Traceability.Location = append(commodity.Traceability.Location, location)
-
-	// Marshal the updated commodity back to JSON
-	commodityJSON, err = json.Marshal(commodity)
-	if err != nil {
-		return fmt.Errorf("failed to marshal commodity: %v", err)
-	}
-	// Update the commodity in the ledger
-	err = ctx.GetStub().PutState(commodityID, commodityJSON)
-	if err != nil {
-		return fmt.Errorf("failed to update commodity in ledger: %v", err)
+		return fmt.Errorf("failed to parse farm attribute: %v", err)
 	}
 
 	// Create a new processed commodity
 	processedCommodity := ProcessedCommodity{
 		ID:         processedID,
+		Processor:  processor,
 		Quantity:   quantity,
-		Material:   material,
+		Material:   materials,
 		BatchNumber: batchNumber,
 		Quality:    quality,
 	}

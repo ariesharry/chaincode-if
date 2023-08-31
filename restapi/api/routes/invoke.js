@@ -60,6 +60,14 @@ router.post('/', async (req, res, next) => {
         }
     }
 
+    if ((func === 'Process' || func === 'Process') && args && args.length > 5) {
+        try {
+            args[3] = JSON.stringify(args[3]);
+        } catch (e) {
+            return res.status(400).json({ error: "Failed to stringify farms attribute." });
+        }
+    }
+
     try {
         const result = await invokeChaincode(org, user, func, args);
         res.json({ result });

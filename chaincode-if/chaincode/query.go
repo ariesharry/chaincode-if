@@ -9,12 +9,7 @@ import (
 
 // ... [Your Other Struct Definitions Here] ...
 
-type CommodityWithTraceability struct {
-	Commodity    Commodity    `json:"commodity"`
-	Traceability Traceability `json:"traceability"`
-}
-
-func (pc *PalmOilContract) QueryCommodityByID(ctx contractapi.TransactionContextInterface, commodityID string) (*CommodityWithTraceability, error) {
+func (pc *PalmOilContract) QueryCommodityByID(ctx contractapi.TransactionContextInterface, commodityID string) (*Commodity, error) {
 	commodityJSON, err := ctx.GetStub().GetState(commodityID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from world state: %v", err)
@@ -29,34 +24,18 @@ func (pc *PalmOilContract) QueryCommodityByID(ctx contractapi.TransactionContext
 		return nil, fmt.Errorf("failed to unmarshal commodity JSON: %v", err)
 	}
 
-	traceabilityJSON, err := ctx.GetStub().GetState(commodity.Traceability.ID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read traceability from world state: %v", err)
-	}
-	if traceabilityJSON == nil {
-		return nil, fmt.Errorf("the traceability with ID %s does not exist", commodity.Traceability.ID)
-	}
-
-	var traceability Traceability
-	err = json.Unmarshal(traceabilityJSON, &traceability)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal traceability JSON: %v", err)
-	}
-
-	return &CommodityWithTraceability{
-		Commodity:    commodity,
-		Traceability: traceability,
-	}, nil
+	return &commodity, nil
 }
 
-func (pc *PalmOilContract) QueryAllCommodities(ctx contractapi.TransactionContextInterface) ([]*CommodityWithTraceability, error) {
-	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+// QueryAllCommodities retrieves all commodities from the ledger
+func (pc *PalmOilContract) QueryAllCommodities(ctx contractapi.TransactionContextInterface) ([]*Commodity, error) {
+	resultsIterator, err := ctx.GetStub().GetStateByRange("COM_", "COM_zzzzzzzzzz")
 	if err != nil {
 		return nil, err
 	}
 	defer resultsIterator.Close()
 
-	var commoditiesWithTraceability []*CommodityWithTraceability
+	var commodities []*Commodity
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {
@@ -69,30 +48,15 @@ func (pc *PalmOilContract) QueryAllCommodities(ctx contractapi.TransactionContex
 			return nil, fmt.Errorf("failed to unmarshal commodity JSON: %v", err)
 		}
 
-		traceabilityJSON, err := ctx.GetStub().GetState(commodity.Traceability.ID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read traceability from world state: %v", err)
-		}
-		if traceabilityJSON != nil {
-			var traceability Traceability
-			err = json.Unmarshal(traceabilityJSON, &traceability)
-			if err != nil {
-				return nil, fmt.Errorf("failed to unmarshal traceability JSON: %v", err)
-			}
-			commoditiesWithTraceability = append(commoditiesWithTraceability, &CommodityWithTraceability{
-				Commodity:    commodity,
-				Traceability: traceability,
-			})
-		}
+		commodities = append(commodities, &commodity)
 	}
 
-	return commoditiesWithTraceability, nil
+	return commodities, nil
 }
-
 
 // QueryAllProcessedCommodities retrieves all processed commodities from the ledger
 func (pc *PalmOilContract) QueryAllProcessedCommodities(ctx contractapi.TransactionContextInterface) ([]*ProcessedCommodity, error) {
-	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	resultsIterator, err := ctx.GetStub().GetStateByRange("PCD_", "PCD_zzzzzzzzzz")
 	if err != nil {
 		return nil, err
 	}
